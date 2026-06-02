@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 General Discussion
+    url: https://github.com/AustralianBioCommons/BioShell/discussions
+    about: Ask questions and discuss BioShell usage
+  - name: 🌐 Australian BioCommons Support
+    url: https://www.biocommons.org.au/
+    about: For platform-level or access issues
