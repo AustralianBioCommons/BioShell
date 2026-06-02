@@ -1,0 +1,52 @@
+name: 🚀 Feature Request
+description: Suggest a new tool, module, or capability for BioShell
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Got an idea to improve BioShell? We'd love to hear it!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the workflow or gap this feature addresses.
+      placeholder: "I often need to do X, but currently have to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: What should BioShell do or provide?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area of BioShell
+      multiple: true
+      options:
+        - New bioinformatics tool / container
+        - Shelley-bio tool finder
+        - VM / cloud environment setup
+        - Nextflow / workflow support
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you tried any workarounds or other tools?
+
+  - type: input
+    id: tool-reference
+    attributes:
+      label: Tool Name / Reference (if applicable)
+      placeholder: "e.g. MultiQC v1.21, https://github.com/ewels/MultiQC"
