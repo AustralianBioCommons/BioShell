@@ -1,0 +1,68 @@
+name: 🐛 Bug Report
+description: Something isn't working as expected in BioShell
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill in as much detail as possible.
+
+  - type: input
+    id: bioshell-version
+    attributes:
+      label: BioShell Version / Cloud Environment
+      description: Which cloud environment are you using? (e.g. Nectar, NCI Nirin, other)
+      placeholder: "e.g. Nectar Research Cloud, BioShell v1.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Affected Tool / Module
+      description: Which BioShell component is affected?
+      multiple: true
+      options:
+        - Shell environment / VM setup
+        - Shelley-bio (tool finder)
+        - CVMFS container modules
+        - Nextflow integration
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: "When I run `bioshell ...`, I expected X but got Y."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal steps to reproduce the issue.
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs or Error Output
+      description: Paste any terminal output, stack traces, or error messages.
+      render: shell
