@@ -12,7 +12,7 @@ body:
     attributes:
       label: BioShell Version / Cloud Environment
       description: Which cloud environment are you using? (e.g. Nectar, NCI Nirin, other)
-      placeholder: "e.g. Nectar Research Cloud, BioShell v1.2"
+      placeholder: "e.g. Nectar Research Cloud, BioShell v1.0.0"
     validations:
       required: true
 
@@ -24,7 +24,7 @@ body:
       multiple: true
       options:
         - Shell environment / VM setup
-        - Shelley-bio (tool finder)
+        - Shelley (CLI support agent)
         - CVMFS container modules
         - Nextflow integration
         - Documentation
