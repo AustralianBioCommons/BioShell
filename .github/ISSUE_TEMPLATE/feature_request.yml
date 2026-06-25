@@ -1,5 +1,5 @@
 name: 🚀 Feature Request
-description: Suggest a new tool, module, or capability for BioShell
+description: Suggest a new capability for BioShell
 labels: ["enhancement"]
 body:
   - type: markdown
@@ -30,8 +30,7 @@ body:
       label: Area of BioShell
       multiple: true
       options:
-        - New bioinformatics tool / container
-        - Shelley-bio tool finder
+        - Shelly CLI agent
         - VM / cloud environment setup
         - Nextflow / workflow support
         - Documentation
@@ -44,9 +43,3 @@ body:
     attributes:
       label: Alternatives Considered
       description: Have you tried any workarounds or other tools?
-
-  - type: input
-    id: tool-reference
-    attributes:
-      label: Tool Name / Reference (if applicable)
-      placeholder: "e.g. MultiQC v1.21, https://github.com/ewels/MultiQC"
