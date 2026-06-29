@@ -1,0 +1,81 @@
+name: update-tool-versions
+
+"on":
+  schedule:
+    - cron: "0 3 1 1,7 *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Update apt package index
+        run: sudo apt-get update -qq
+
+      - name: Get current year-month
+        id: date
+        run: echo "yyyymm=$(date -u +'%Y.%m')" >> "$GITHUB_OUTPUT"
+
+      - name: Check tool versions and update tool-versions.yml
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/check-versions.py "$GITHUB_OUTPUT"
+
+      - name: Bump image_version (only if tool versions changed)
+        if: steps.check.outputs.changes_found == 'true'
+        id: bump
+        run: python3 .github/scripts/bump-image-version.py "$GITHUB_OUTPUT"
+
+      - name: Read summary for PR body
+        if: steps.check.outputs.changes_found == 'true'
+        id: summary
+        run: |
+          delimiter=$(openssl rand -hex 8)
+          {
+            echo "body<<${delimiter}"
+            cat version_check_summary.md
+            echo ""
+            echo "---"
+            echo "Image version bumped: \`${{ steps.bump.outputs.old_image_version }}\` -> \`${{ steps.bump.outputs.new_image_version }}\`"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+          rm -f version_check_summary.md
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changes_found == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automated/tool-version-updates-${{ steps.date.outputs.yyyymm }}
+          delete-branch: true
+          commit-message: "Update tool versions and bump image version"
+          title: "Tool version updates"
+          body: ${{ steps.summary.outputs.body }}
+          add-paths: |
+            build/ansible/vars/tool-versions.yml
+            build/openstack-bioshell.pkr.hcl
+          labels: |
+            automated
+            dependencies
+
+      - name: No updates found
+        if: steps.check.outputs.changes_found != 'true'
+        run: |
+          echo "All tool versions are already current - no PR needed."
+          rm -f version_check_summary.md
