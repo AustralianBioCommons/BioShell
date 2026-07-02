@@ -1,11 +1,9 @@
 name: update-tool-versions
 
-on:
+"on":
   push:
     branches:
       - actions-update-versions
-
-"on":
   schedule:
     - cron: "0 3 1 1,7 *"
   workflow_dispatch: {}
