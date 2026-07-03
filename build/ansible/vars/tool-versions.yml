@@ -1,22 +1,22 @@
 # ============================================================
 # Tool versions — update here, everything else follows
 # ============================================================
-singularity_version: "4.4.1"
+singularity_version: "4.5.0"
 singularity_prefix: "/opt/singularity"
 
 shpc_version: "0.1.33"
 
-go_version: "1.26.1"
+go_version: "1.26.4"
 os: "linux"
 arch: "amd64"
 
 
 java_version: "21"
-nextflow_version: "25.10.4"
-nfcore_version: "3.5.2"
+nextflow_version: "26.04.4"
+nfcore_version: "4.0.2"
 
-rstudio_version_full: "2023.12.1-402"
-rstudio_version: "2023.12.1"
+rstudio_version_full: "2026.06.0-242"
+rstudio_version: "2026.06.0"
 
 # Each platform file overrides this proxy variable
 cvmfs_quota_limit: 4096
@@ -31,4 +31,4 @@ module_base_opt: "/opt/Modules/modulefiles"
 # Common tools
 snakemake_version: "7.32.4"
 r_version: "4.3.3"
-jupyter_version: "2026.04"
+jupyter_version: "2026.07"

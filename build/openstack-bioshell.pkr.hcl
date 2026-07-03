@@ -41,7 +41,7 @@ variable "platform" {
 
 variable "image_version" {
   type    = string
-  default = "1.0.0"
+  default = "1.1.0"
 }
 
 source "openstack" "ubuntu" {
