@@ -1,5 +1,9 @@
 # BioShell
 
+<p align="center">
+  <img src="images/BioShell_logo_with_name.png" alt="BioShell logo" width="400">
+</p>
+
 BioShell is a pre‑configured, cloud‑ready bioinformatics environment designed to make command‑line–based biological data analysis easy to deploy, use, and scale. The primary goal of BioShell is to provide researchers and training providers with a flexible and cost‑effective platform for running bioinformatics workflows without the overhead of complex system setup or infrastructure management.
 
 BioShell enables users to focus on analysis and training, rather than on system configuration and resource provisioning.
