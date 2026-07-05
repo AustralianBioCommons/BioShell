@@ -39,8 +39,13 @@ variable "platform" {
   type = string
 }
 
+variable "image_version" {
+  type    = string
+  default = "1.0.0"
+}
+
 source "openstack" "ubuntu" {
-  image_name        = "bioshell"
+  image_name        = "bioshell-v${var.image_version}"
   flavor            = var.flavor
   ssh_username      = "ubuntu"
   volume_size       = var.volume_size

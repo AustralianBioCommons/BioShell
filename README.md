@@ -20,6 +20,7 @@ This repository contains configuration and automation for building a custom Ubun
     * [Activation](#activation)
 * [Build Image](#build-image)
 * [Using BioShell](#Using-BioShell)
+* [Maintenance & Versioning](docs/MAINTENANCE.md)
 
 ## Spinning up a VM in OpenStack
 
