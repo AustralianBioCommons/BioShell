@@ -79,7 +79,7 @@ NOTE: Do not select an external/public network here
 
 In the Security Groups tab, ensure the following are listed under Allocated by clicking the up arrow in the Avialable groups:
 - **default** that allows outbound traffic and internal communication
-- **SSH-access security group** that allows inbound TCP port 22 from your IP or network
+- **SSH-access security group** that allows inbound TCP port 22 from your IP or network. Follow the [guide](https://tutorials.rc.nectar.org.au/sec-groups-101/03-create) to create one if you don't already have one.
 
 SSH access is required to log in to the instance.
 
