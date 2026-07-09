@@ -204,7 +204,7 @@ packer init .
 
 ### Step 2: Prepare Packer build configuration
 
-Before running the build, review and update `[platform_name].pkrvars.hcl` to ensure the values match your OpenStack environment. If using a prepared config skip to step 3.
+Before running the build, review and update `[platform_name].pkrvars.hcl` in [`packer vars`](build/packer-vars) to ensure the values match your OpenStack environment. If using a prepared config skip to step 3.
 
 **Note: Example working configurations for [Nectar](build/packer-vars/nectar.pkrvars.hcl) and [Nirin](build/packer-vars/nirin.pkrvars.hcl) are included and were last successfully tested on 2 February 2026. The Nirin configuration requires you to add your project [network](#network-cloud-dependant).**
 

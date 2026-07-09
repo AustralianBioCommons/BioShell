@@ -11,4 +11,4 @@
     - validate_nextflow
     - validate_jupyter
     - validate_rstudio
-    - validate_shelley-bio
+    - validate_shelley

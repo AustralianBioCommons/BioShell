@@ -158,11 +158,11 @@
 
 - name: Create ansible modulefile
   copy:
-    dest: "/apps/Modules/modulefiles/ansible/{{ ansible_version.string }}"
+    dest: "/apps/Modules/modulefiles/ansible/{{ ansible_target_version }}"
     content: |
       #%Module1.0
 
-      prepend-path PATH "/apps/ansible/{{ ansible_version.string }}/bin"
+      prepend-path PATH "/apps/ansible/{{ ansible_target_version }}/bin"
 
 - name: Ensure motd.d directory exists
   file:
@@ -193,9 +193,9 @@
       #                     (_ \/      \_,                             #
       #                        `uu----uu'                              #
       # Basic commands:                                                #
-      # shelley-bio find <tool>                                        #
-      # shelley-bio search "<function>"                                #
-      # shelley-bio versions <tool>                                    #
-      # shelley-bio build <tool>                                       #
-      # shelley-bio interactive                                        #
+      # shelley find <tool>                                            #
+      # shelley search "<function>"                                    #
+      # shelley versions <tool>                                        #
+      # shelley build <tool>                                           #
+      # shelley interactive                                            #
       ##################################################################

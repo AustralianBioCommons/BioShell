@@ -1,0 +1,47 @@
+---
+- name: Check shelley executable exists
+  stat:
+    path: /usr/local/bin/shelley
+  register: shelley_bin
+  failed_when: not shelley_bin.stat.exists
+
+- name: Check shelley executable is executable
+  failed_when: not shelley_bin.stat.executable
+  assert:
+    that:
+      - shelley_bin.stat.executable
+
+- name: Run shelley --help as a smoke test
+  command: shelley --help
+  changed_when: false
+  register: shelley_help
+  failed_when: false
+
+- name: Report shelley --help result
+  debug:
+    msg: "{{ 'OK' if shelley_help.rc == 0 else 'WARNING: shelley --help failed' }}"
+
+- name: Run shelley --version as a smoke test
+  command: shelley --version
+  changed_when: false
+  register: shelley_version
+  failed_when: false
+
+- name: Report shelley --version result
+  debug:
+    msg: "{{ 'OK' if shelley_version.rc == 0 else 'WARNING: shelley --version failed' }}"
+
+- name: Check MOTD exists
+  stat:
+    path: /etc/motd.d/bioshell
+  register: motd_file
+
+- name: Assert MOTD exists
+  assert:
+    that:
+      - motd_file.stat is defined
+      - motd_file.stat.exists
+
+- name: Check MOTD contains BioShell marker
+  command: grep -q "BioShell" /etc/motd.d/bioshell
+  changed_when: false
