@@ -93,6 +93,13 @@
       module-whatis   "Sets up the Singularity system in your environment"
       prepend-path PATH "{{ singularity_prefix }}/{{ singularity_version }}/bin"
 
+- name: Auto-load the singularity module for every login shell
+  lineinfile:
+    path: /etc/environment
+    regexp: '^LMOD_SYSTEM_DEFAULT_MODULES='
+    line: 'LMOD_SYSTEM_DEFAULT_MODULES="singularity"'
+    state: present
+
 - name: Install shpc
   shell: |
     mkdir -p /opt/shpc/bin

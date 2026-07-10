@@ -32,6 +32,13 @@
   register: uv_version
   changed_when: false
 
+- name: Symlink uv onto PATH
+  file:
+    src: /opt/uv/uv
+    dest: /usr/local/bin/uv
+    state: link
+    force: yes
+
 - name: Install shelley into system tool location, linked onto PATH
   command: >
     /opt/uv/uv tool install git+https://github.com/Sydney-Informatics-Hub/shelley
