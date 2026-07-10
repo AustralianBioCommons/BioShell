@@ -181,6 +181,9 @@
       #                                                                #
       # Welcome to BioShell!                                           #
       #                                                                #
+      # To learn how BioShell is built, visit:                         #
+      #  https://github.com/AustralianBioCommons/BioShell              #
+      #                                                                #
       # A range of commonly used bioinformatics software is available  #
       # via CVMFS.                                                     #
       #                                                                #
@@ -188,7 +191,7 @@
       #   cvmfs_config probe                                           #
       #                                                                #
       # If you need help finding and installing software,              #
-      # ask Shelley-Bio                                                #
+      # ask Shelley.                                                   #
       #                      _   .----.                                #
       #                     (_ \/      \_,                             #
       #                        `uu----uu'                              #
