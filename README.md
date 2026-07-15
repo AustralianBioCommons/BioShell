@@ -13,6 +13,9 @@ BioShell is built using Packer and Ansible, and is designed to run on OpenStack�
 
 This repository contains configuration and automation for building a custom Ubuntu‑based BioShell and provisioning instances on OpenStack‑compatible cloud environments.
 
+### Documentation
+For usage instructions, see the [Bioshell Guide](https://sih.tools/bioshell-guide).
+
 ----------------------------
 ## Table of Contents
 ----------------------------
