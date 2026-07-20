@@ -194,14 +194,14 @@
       #   cvmfs_config probe                                           #
       #                                                                #
       # If you need help finding and installing software,              #
-      # ask Shelley.                                                   #
+      # use Shelley.                                                   #
       #                      _   .----.                                #
       #                     (_ \/      \_,                             #
       #                        `uu----uu'                              #
       # Basic commands:                                                #
+      # shelley help                                                   #
       # shelley find <tool>                                            #
       # shelley search "<function>"                                    #
-      # shelley versions <tool>                                        #
       # shelley build <tool>                                           #
       # shelley interactive                                            #
       ##################################################################
