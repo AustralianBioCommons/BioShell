@@ -70,12 +70,17 @@
   args:
     executable: /bin/bash
 
-- name: Clean up Singularity source code
+- name: Clean up Singularity downloaded sources and build tree
   file:
-    path: /tmp/singularity
+    path: "{{ item }}"
     state: absent
+  loop:
+    - "/tmp/go{{ go_version }}.{{ os }}-{{ arch }}.tar.gz"
+    # tasks run as root (become: true), so $HOME below is /root
+    - /root/go
+    - /root/.cache/go-build
 
-- name: Clean up go source code
+- name: Clean up go toolchain
   file:
     path: /apps/go
     state: absent
@@ -104,7 +109,7 @@
   shell: |
     mkdir -p /opt/shpc/bin
     cd /opt/shpc
-    git clone -b {{ shpc_version }} https://github.com/singularityhub/singularity-hpc.git
+    git clone --depth 1 -b {{ shpc_version }} https://github.com/singularityhub/singularity-hpc.git
     cd singularity-hpc
     python3 -m venv /opt/shpc-env
     source /opt/shpc-env/bin/activate

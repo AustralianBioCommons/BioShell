@@ -1,0 +1,7 @@
+---
+- name: Clean up BioShell build artifacts before saving image
+  hosts: all
+  become: true
+
+  roles:
+    - cleanup
