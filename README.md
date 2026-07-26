@@ -303,7 +303,7 @@ Once the configuration has been updated, run the build:
 For Nirin and Nectar users:
 ```
 ./scripts/nirin.sh      // nirin users
-./scripts/nectar.sh.    // nectar users
+./scripts/nectar.sh    // nectar users
 ```
 For other platform users:
 ```
