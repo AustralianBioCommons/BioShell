@@ -12,3 +12,4 @@
     - validate_jupyter
     - validate_rstudio
     - validate_shelley
+    - validate_globus_connect_personal

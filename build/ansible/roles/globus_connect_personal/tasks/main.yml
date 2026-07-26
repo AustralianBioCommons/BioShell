@@ -1,0 +1,146 @@
+---
+- name: Ensure prerequisites are installed for Globus Connect Personal
+  apt:
+    name:
+      - tar
+      - ca-certificates
+    state: present
+
+- name: Check if pinned Globus Connect Personal version is already installed
+  stat:
+    path: "/apps/globusconnectpersonal/{{ globus_connect_personal_version }}/globusconnectpersonal"
+  register: gcp_installed
+
+- name: Install Globus Connect Personal
+  when: not gcp_installed.stat.exists
+  block:
+    - name: Create /apps/globusconnectpersonal directory
+      file:
+        path: /apps/globusconnectpersonal
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Download Globus Connect Personal (latest stable release)
+      get_url:
+        url: https://downloads.globus.org/globus-connect-personal/linux/stable/globusconnectpersonal-latest.tgz
+        dest: /tmp/globusconnectpersonal-latest.tgz
+
+    - name: Extract Globus Connect Personal to a scratch directory
+      unarchive:
+        src: /tmp/globusconnectpersonal-latest.tgz
+        dest: /tmp
+        remote_src: yes
+
+    - name: Discover the extracted version directory
+      find:
+        paths: /tmp
+        patterns: "globusconnectpersonal-*"
+        file_type: directory
+      register: gcp_extracted
+
+    - name: Determine the downloaded version
+      set_fact:
+        gcp_actual_version: "{{ gcp_extracted.files[0].path | basename | regex_replace('^globusconnectpersonal-', '') }}"
+
+    # downloads.globus.org only ever serves "latest" - there is no versioned
+    # download URL - so we pin the version we last tested in tool-versions.yml
+    # and flag it here if upstream has moved on, rather than silently drifting.
+    - name: Warn if downloaded version differs from the pinned version
+      debug:
+        msg: >-
+          WARNING: downloaded Globus Connect Personal {{ gcp_actual_version }} but
+          globus_connect_personal_version is pinned to {{ globus_connect_personal_version }}
+          in vars/tool-versions.yml. Update the pin to track this release.
+      when: gcp_actual_version != globus_connect_personal_version
+
+    - name: Move Globus Connect Personal into /apps/globusconnectpersonal/{{ gcp_actual_version }}
+      command: "mv {{ gcp_extracted.files[0].path }} /apps/globusconnectpersonal/{{ gcp_actual_version }}"
+      args:
+        creates: "/apps/globusconnectpersonal/{{ gcp_actual_version }}"
+
+    - name: Clean up downloaded archive
+      file:
+        path: /tmp/globusconnectpersonal-latest.tgz
+        state: absent
+
+- name: Set the effective installed version
+  set_fact:
+    gcp_version: "{{ gcp_actual_version | default(globus_connect_personal_version) }}"
+
+- name: Symlink globusconnectpersonal onto PATH
+  file:
+    src: "/apps/globusconnectpersonal/{{ gcp_version }}/globusconnectpersonal"
+    dest: /usr/local/bin/globusconnectpersonal
+    state: link
+    force: yes
+
+- name: Create Modules directory for Globus Connect Personal
+  file:
+    path: /apps/Modules/modulefiles/globusconnectpersonal
+    state: directory
+
+- name: Create Globus Connect Personal modulefile
+  copy:
+    dest: "/apps/Modules/modulefiles/globusconnectpersonal/{{ gcp_version }}"
+    content: |
+      #%Module1.0
+
+      module-whatis "Globus Connect Personal {{ gcp_version }}"
+      prepend-path PATH "/apps/globusconnectpersonal/{{ gcp_version }}"
+
+      if { [ module-info mode load ] } {
+        puts stderr ""
+        puts stderr "Globus Connect Personal"
+        puts stderr "----------------------------------"
+        puts stderr "The first time you use Globus Connect Personal you must complete"
+        puts stderr "setup before you can run the full application."
+        puts stderr ""
+        puts stderr "Interactive setup (requires a browser on this machine):"
+        puts stderr "  globusconnectpersonal"
+        puts stderr ""
+        puts stderr "Headless setup (generate a setup key at https://app.globus.org/file-manager/gcp):"
+        puts stderr "  globusconnectpersonal -setup <setup key>"
+        puts stderr ""
+        puts stderr "Once setup is complete:"
+        puts stderr "  globusconnectpersonal -start &"
+        puts stderr "  globusconnectpersonal -status"
+        puts stderr "  globusconnectpersonal -stop"
+        puts stderr ""
+        puts stderr "To keep your endpoint running after logout:"
+        puts stderr "  systemctl --user enable --now globusconnectpersonal"
+        puts stderr ""
+      }
+
+- name: Create systemd user service directory
+  file:
+    path: /etc/systemd/user
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install Globus Connect Personal systemd user service
+  copy:
+    dest: /etc/systemd/user/globusconnectpersonal.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Globus Connect Personal
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=simple
+      WorkingDirectory=%h
+      ExecStart=/usr/local/bin/globusconnectpersonal -start
+      ExecStop=/usr/local/bin/globusconnectpersonal -stop
+      Restart=on-failure
+      RestartSec=5
+
+      [Install]
+      WantedBy=default.target
+  notify: Reload systemd user daemon

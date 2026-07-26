@@ -19,6 +19,10 @@ nfcore_version: "4.0.2"
 rstudio_version_full: "2026.06.0-242"
 rstudio_version: "2026.06.0"
 
+# downloads.globus.org only serves "latest" - this is the version we last
+# tested against; the role warns if upstream has moved past this pin.
+globus_connect_personal_version: "3.2.9"
+
 # Each platform file overrides this proxy variable
 cvmfs_quota_limit: 4096
 cvmfs_proxy: "DIRECT"
