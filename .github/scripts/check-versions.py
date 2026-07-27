@@ -138,6 +138,28 @@ def check_apt_package(package_name, current):
         return latest, f"apt-cache madison {package_name} (ubuntu noble/universe)"
     return None, None
 
+GLOBUS_TARBALL_URL = "https://downloads.globus.org/globus-connect-personal/linux/stable/globusconnectpersonal-latest.tgz"
+GLOBUS_DIR_PATTERN = re.compile(r"^globusconnectpersonal-([\d.]+)/?$")
+
+def check_globus_connect_personal(current):
+    # downloads.globus.org only ever serves "latest" - there is no versioned
+    # download URL - so read just the first tar entry's directory name off the
+    # stream (curl/tar exit as soon as `head` stops reading) instead of
+    # pulling the whole ~140MB tarball.
+    result = subprocess.run(
+        ["bash", "-c", f"curl -sL {GLOBUS_TARBALL_URL} | tar tz 2>/dev/null | head -1"],
+        capture_output=True, text=True, timeout=30,
+    )
+    line = result.stdout.strip()
+    match = GLOBUS_DIR_PATTERN.match(line)
+    if not match:
+        raise RuntimeError(f"could not parse Globus Connect Personal version from tarball listing: {line!r}")
+
+    latest = match.group(1)
+    if semver_tuple(latest) > semver_tuple(current):
+        return latest, GLOBUS_TARBALL_URL
+    return None, None
+
 def check_r(current):
     return check_apt_package("r-base", current)
 
@@ -158,6 +180,7 @@ CHECKS = [
     ("Nextflow", "nextflow_version", check_nextflow),
     ("nf-core", "nfcore_version", check_nfcore),
     ("RStudio", "rstudio_version_full", check_rstudio),
+    ("Globus Connect Personal", "globus_connect_personal_version", check_globus_connect_personal),
     ("Snakemake (apt)", "snakemake_version", check_snakemake_apt),
     ("R (apt)", "r_version", check_r),
     ("Jupyter (timestamp)", "jupyter_version", check_jupyter),
