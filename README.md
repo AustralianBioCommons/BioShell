@@ -86,6 +86,18 @@ In the Security Groups tab, ensure the following are listed under Allocated by c
 
 SSH access is required to log in to the instance.
 
+#### Additional Rules for Optional Services
+
+If you plan to access RStudio Server or Jupyter Notebook from a browser, add inbound rules for their ports too. As with SSH, scope `Remote IP Prefix` to your own IP or network rather than `0.0.0.0/0` wherever possible.
+
+| Direction | Ether Type | IP Protocol | Port Range | Remote IP Prefix | Description |
+|---|---|---|---|---|---|
+| Ingress | IPv4 | TCP | 22 | your IP/network | SSH |
+| Ingress | IPv4 | TCP | 8787 | your IP/network | RStudio Server web interface |
+| Ingress | IPv4 | TCP | 8888 | your IP/network | Jupyter Notebook server |
+
+**Globus Connect Personal does not require any inbound rules.** It only makes outbound connections to Globus's relay infrastructure (already covered by the `default` security group), which is why it works without opening any firewall ports. See [Globus's firewall documentation](https://docs.globus.org/globus-connect-personal/firewall-configuration/) if your network's outbound access is restricted.
+
 ### Select a Key Pair
 
 In the Key Pair tab:
