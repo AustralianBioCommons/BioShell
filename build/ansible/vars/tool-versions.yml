@@ -13,7 +13,7 @@ arch: "amd64"
 ansible_target_version: "2.16.3"
 
 java_version: "21"
-nextflow_version: "26.04.4"
+nextflow_version: "26.04.6"
 nfcore_version: "4.0.2"
 
 rstudio_version_full: "2026.06.0-242"
