@@ -1,0 +1,49 @@
+---
+- name: Ensure prerequisites are installed (python3, curl, git)
+  apt:
+    name:
+      - python3
+      - curl
+      - git
+    state: present
+    update_cache: yes
+
+- name: Create /opt/uv directory
+  file:
+    path: /opt/uv
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Check if uv is already installed
+  stat:
+    path: /opt/uv/uv
+  register: uv_binary
+
+- name: Install uv system-wide into /opt/uv
+  shell: curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/opt/uv sh
+  args:
+    executable: /bin/bash
+  when: not uv_binary.stat.exists
+
+- name: Verify uv installation
+  command: /opt/uv/uv --version
+  register: uv_version
+  changed_when: false
+
+- name: Symlink uv onto PATH
+  file:
+    src: /opt/uv/uv
+    dest: /usr/local/bin/uv
+    state: link
+    force: yes
+
+- name: Install shelley into system tool location, linked onto PATH
+  command: >
+    /opt/uv/uv tool install git+https://github.com/Sydney-Informatics-Hub/shelley
+  environment:
+    UV_TOOL_DIR: /opt/uv/tools
+    UV_TOOL_BIN_DIR: /usr/local/bin
+  args:
+    creates: /usr/local/bin/shelley

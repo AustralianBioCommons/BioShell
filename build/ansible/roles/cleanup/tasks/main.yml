@@ -1,0 +1,35 @@
+---
+- name: Remove build and package manager caches
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /root/.cache/go-build
+    - /root/.cache/pip
+    - /root/.cache/uv
+    - /var/cache/apt/archives
+
+- name: Remove orphaned packages pulled in as build dependencies
+  apt:
+    autoremove: yes
+
+- name: Purge apt archive cache
+  command: apt-get clean
+
+- name: Clear apt package lists cache
+  shell: rm -rf /var/lib/apt/lists/*
+  args:
+    executable: /bin/bash
+
+- name: Clear temporary files
+  shell: rm -rf /tmp/* /var/tmp/*
+  args:
+    executable: /bin/bash
+
+- name: Vacuum system journal
+  command: journalctl --vacuum-size=50M
+  changed_when: false
+
+- name: Wipe CVMFS local cache
+  command: cvmfs_config wipecache
+  changed_when: false

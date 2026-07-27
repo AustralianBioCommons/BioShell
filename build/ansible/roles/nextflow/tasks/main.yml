@@ -5,10 +5,20 @@
     state: present
   when: ansible_os_family == "Debian"
 
-- name: Set Java {{ java_version }} as default
-  alternatives:
-    name: java
-    path: /usr/lib/jvm/java-{{ java_version }}-openjdk-amd64/bin/java
+- name: Register Java {{ java_version }} as an alternative
+  command: >
+    update-alternatives --install /usr/bin/java java
+    /usr/lib/jvm/java-{{ java_version }}-openjdk-amd64/bin/java 1
+  args:
+    creates: /etc/alternatives/java
+  when: ansible_os_family == "Debian"
+
+- name: Set Java {{ java_version }} as the active alternative
+  command: >
+    update-alternatives --set java
+    /usr/lib/jvm/java-{{ java_version }}-openjdk-amd64/bin/java
+  register: java_alt_set
+  changed_when: "'link currently' not in java_alt_set.stdout"
   when: ansible_os_family == "Debian"
 
 - name: Create Nextflow directories

@@ -13,4 +13,5 @@
     - nextflow
     - rstudio
     - cvmfs
-    - shelley-bio
+    - shelley
+    - globus_connect_personal

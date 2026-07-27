@@ -88,4 +88,17 @@ build {
     ]
     use_proxy = false
   }
+
+  # 3. Clean up build artifacts and caches — runs last, right before the image is saved
+  provisioner "ansible" {
+    playbook_file = "ansible/cleanup-bioshell.yml"
+    extra_arguments = [
+      "--extra-vars", "ansible_user=ubuntu platform=${var.platform}"
+    ]
+    ansible_env_vars = [
+      "ANSIBLE_HOST_KEY_CHECKING=False",
+      "ANSIBLE_SCP_IF_SSH=True"
+    ]
+    use_proxy = false
+  }
 }

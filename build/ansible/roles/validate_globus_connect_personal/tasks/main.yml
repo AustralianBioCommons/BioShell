@@ -1,0 +1,29 @@
+---
+- name: Check globusconnectpersonal is on PATH
+  command: which globusconnectpersonal
+  register: gcp_which
+  changed_when: false
+  failed_when: gcp_which.rc != 0
+
+- name: Check globusconnectpersonal symlink target exists and is executable
+  stat:
+    path: /usr/local/bin/globusconnectpersonal
+    follow: true
+  register: gcp_bin
+  failed_when: not gcp_bin.stat.exists or not gcp_bin.stat.executable
+
+- name: Run globusconnectpersonal -version as a smoke test
+  command: globusconnectpersonal -version
+  changed_when: false
+  register: gcp_version_check
+  failed_when: false
+
+- name: Report globusconnectpersonal -version result
+  debug:
+    msg: "{{ 'OK: ' + gcp_version_check.stdout if gcp_version_check.rc == 0 else 'WARNING: globusconnectpersonal -version failed' }}"
+
+- name: Check the Globus Connect Personal systemd user service is installed
+  stat:
+    path: /etc/systemd/user/globusconnectpersonal.service
+  register: gcp_service
+  failed_when: not gcp_service.stat.exists

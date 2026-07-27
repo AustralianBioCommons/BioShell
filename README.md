@@ -13,6 +13,9 @@ BioShell is built using Packer and Ansible, and is designed to run on OpenStack�
 
 This repository contains configuration and automation for building a custom Ubuntu‑based BioShell and provisioning instances on OpenStack‑compatible cloud environments.
 
+### Documentation
+For usage instructions, see the [Bioshell Guide](https://sih.tools/bioshell-guide).
+
 ----------------------------
 ## Table of Contents
 ----------------------------
@@ -79,9 +82,21 @@ NOTE: Do not select an external/public network here
 
 In the Security Groups tab, ensure the following are listed under Allocated by clicking the up arrow in the Avialable groups:
 - **default** that allows outbound traffic and internal communication
-- **SSH-access security group** that allows inbound TCP port 22 from your IP or network
+- **SSH-access security group** that allows inbound TCP port 22 from your IP or network. Follow the [guide](https://tutorials.rc.nectar.org.au/sec-groups-101/03-create) to create one if you don't already have one.
 
 SSH access is required to log in to the instance.
+
+#### Additional Rules for Optional Services
+
+If you plan to access RStudio Server or Jupyter Notebook from a browser, add inbound rules for their ports too. As with SSH, scope `Remote IP Prefix` to your own IP or network rather than `0.0.0.0/0` wherever possible.
+
+| Direction | Ether Type | IP Protocol | Port Range | Remote IP Prefix | Description |
+|---|---|---|---|---|---|
+| Ingress | IPv4 | TCP | 22 | your IP/network | SSH |
+| Ingress | IPv4 | TCP | 8787 | your IP/network | RStudio Server web interface |
+| Ingress | IPv4 | TCP | 8888 | your IP/network | Jupyter Notebook server |
+
+**Globus Connect Personal does not require any inbound rules.** It only makes outbound connections to Globus's relay infrastructure (already covered by the `default` security group), which is why it works without opening any firewall ports. See [Globus's firewall documentation](https://docs.globus.org/globus-connect-personal/firewall-configuration/) if your network's outbound access is restricted.
 
 ### Select a Key Pair
 
@@ -204,7 +219,7 @@ packer init .
 
 ### Step 2: Prepare Packer build configuration
 
-Before running the build, review and update `[platform_name].pkrvars.hcl` to ensure the values match your OpenStack environment. If using a prepared config skip to step 3.
+Before running the build, review and update `[platform_name].pkrvars.hcl` in [`packer vars`](build/packer-vars) to ensure the values match your OpenStack environment. If using a prepared config skip to step 3.
 
 **Note: Example working configurations for [Nectar](build/packer-vars/nectar.pkrvars.hcl) and [Nirin](build/packer-vars/nirin.pkrvars.hcl) are included and were last successfully tested on 2 February 2026. The Nirin configuration requires you to add your project [network](#network-cloud-dependant).**
 
@@ -300,7 +315,7 @@ Once the configuration has been updated, run the build:
 For Nirin and Nectar users:
 ```
 ./scripts/nirin.sh      // nirin users
-./scripts/nectar.sh.    // nectar users
+./scripts/nectar.sh    // nectar users
 ```
 For other platform users:
 ```
