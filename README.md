@@ -349,6 +349,14 @@ key pair.
 ssh -i /path/to/your/key <remote_user>@<bioshell_ip>
 ```
 
+### MOTD / Welcome Banner
+
+Every SSH login to a BioShell VM shows a welcome banner with a live snapshot of the environment: the number of software modules currently available and whether CVMFS is mounted, plus a quick-reference list of common commands (`module avail`, `shelley-bio search`, `shelley-bio interactive`).
+
+The banner is generated dynamically on each login by `/etc/update-motd.d/99-bioshell` (installed via `run-parts`/`pam_motd`), so it always reflects the current state of the instance rather than a static message baked into the image.
+
+To customize the banner's content or styling, edit [build/ansible/roles/motd/files/99-bioshell](build/ansible/roles/motd/files/99-bioshell) and rebuild the image (or copy the updated script onto a running instance for a quick preview).
+
 ### Tools Available in BioShell
 
 BioShell includes a curated set of commonly used bioinformatics and workflow tools, exposed through the environment modules system.

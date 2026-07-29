@@ -1,0 +1,114 @@
+#!/bin/bash
+#
+# BioShell login banner, run by run-parts as part of /etc/update-motd.d.
+# To customize this banner, edit build/ansible/roles/motd/files/99-bioshell
+# in the BioShell repo and re-provision (Packer/Ansible), or edit this file
+# directly on the image and it will be picked up on the next SSH login.
+
+set -u
+
+VERSION_FILE="/etc/bioshell-version"
+BIOSHELL_VERSION="dev"
+if [ -r "$VERSION_FILE" ]; then
+    BIOSHELL_VERSION="$(cat "$VERSION_FILE" 2>/dev/null)"
+    [ -z "$BIOSHELL_VERSION" ] && BIOSHELL_VERSION="dev"
+fi
+
+# Colour support degrades gracefully: run-parts/pam_motd often runs this
+# script with no controlling terminal or an unset/unusable $TERM, in which
+# case tput errors out and we fall back to plain, uncoloured text.
+BOLD="$(tput bold 2>/dev/null)"
+    RESET="$(tput sgr0 2>/dev/null)"
+
+    # BioCommons brand palette. Truecolor (24-bit) gives an exact hex match;
+    # falls back to the nearest xterm 256-colour index on terminals that
+    # advertise colour support but not truecolor (detected via $COLORTERM).
+    if [ "${COLORTERM:-}" = "truecolor" ] || [ "${COLORTERM:-}" = "24bit" ]; then
+        GREEN=$'\e[38;2;90;195;177m'    # #5ac3b1
+        ORANGE=$'\e[38;2;244;159;29m'   # #f49f1d
+        RED=$'\e[38;2;237;8;124m'       # #ed087c
+        BLUE=$'\e[38;2;32;90;134m'      # #205a86
+    else
+        GREEN="$(tput setaf 73 2>/dev/null)"    # nearest 256-colour match
+        ORANGE="$(tput setaf 214 2>/dev/null)"
+        RED="$(tput setaf 198 2>/dev/null)"
+        BLUE="$(tput setaf 24 2>/dev/null)"
+    fi
+
+    CYAN="$BLUE"
+    YELLOW="$ORANGE"
+    MAGENTA="$RED"
+
+COLS="$(tput cols 2>/dev/null)"
+case "$COLS" in
+    ''|*[!0-9]*) COLS=60 ;;
+esac
+[ "$COLS" -gt 80 ] && COLS=80
+[ "$COLS" -lt 20 ] && COLS=20
+
+rule() {
+    printf '%s' "${CYAN}"
+    printf '.%.0s' $(seq 1 "$COLS")
+    printf '%s\n' "${RESET}"
+}
+
+USER_NAME="${USER:-}"
+if [ -z "$USER_NAME" ]; then
+    USER_NAME="$(id -un 2>/dev/null)"
+fi
+[ -z "$USER_NAME" ] && USER_NAME="user"
+
+HOST_NAME="$(hostname -s 2>/dev/null)"
+[ -z "$HOST_NAME" ] && HOST_NAME="$(hostname 2>/dev/null)"
+[ -z "$HOST_NAME" ] && HOST_NAME="bioshell"
+
+# Environment status
+MODULE_COUNT="n/a"
+LMOD_INIT="/usr/share/lmod/lmod/init/bash"
+if [ -r "$LMOD_INIT" ] && ! command -v module >/dev/null 2>&1; then
+    # shellcheck disable=SC1090
+    . "$LMOD_INIT" >/dev/null 2>&1
+fi
+if command -v module >/dev/null 2>&1; then
+    MODULE_COUNT="$(module avail -t 2>&1 | grep -Evc '^\s*$|:$')"
+fi
+
+CVMFS_STATUS="not mounted"
+if command -v mountpoint >/dev/null 2>&1 && mountpoint -q /cvmfs 2>/dev/null; then
+    CVMFS_STATUS="mounted"
+fi
+
+echo
+echo
+
+cat <<ART
+${BOLD}${GREEN}   
+                            
+┌─────────────────────────────────────────────────────────────────────────────────────┐   
+│                                       ☆                              ★  ☆           │   
+│                               ★                  ★                   ☆              │   
+│       ☆         ☆                                                                   │   
+│★           ★                                  ☆               ★                     │   
+│            ☆                    ★                                                   │   
+│   ☆           ████████                  ★                                           │   
+│      ★       ███▗███▗██                                               ☆             │   
+│               ████████                                                              │   
+│───────────────▐▐    ▌▌──────────────────────────────────────────────────────────────│   
+│                                                                                     │   
+│   Welcome to BioShell !                                                             │   
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘   
+
+${RESET}
+ART
+
+printf '%sDocumentation at: https://sih.tools/bioshell-guide%s\n' "${BOLD}${RED}" "${RESET}"
+echo
+printf '%sQuick commands%s\n' "${BOLD}${ORANGE}" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" "shelley help" "List available commands" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley find <tool>' "List containers for a bioinformatics tool" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley build <tool>' "Make a module loadable bioinformatics tool" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" "shelley interactive" "Launch the interactive assistant" "${RESET}"
+echo
+
+exit 0
