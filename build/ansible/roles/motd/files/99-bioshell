@@ -96,6 +96,7 @@ echo
 printf '%sQuick commands%s\n' "${BOLD}${ORANGE}" "${RESET}"
 printf '  %s%-32s %s%s\n' "${BLUE}" "shelley help" "List available commands" "${RESET}"
 printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley find <tool>' "List containers for a bioinformatics tool" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley search <function>' "Search for tools by function" "${RESET}"
 printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley build <tool>' "Make a module loadable bioinformatics tool" "${RESET}"
 printf '  %s%-32s %s%s\n' "${BLUE}" "shelley interactive" "Launch the interactive assistant" "${RESET}"
 echo
