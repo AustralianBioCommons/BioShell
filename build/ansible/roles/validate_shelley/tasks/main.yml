@@ -33,7 +33,7 @@
 
 - name: Check MOTD exists
   stat:
-    path: /etc/motd.d/bioshell
+    path: /etc/update-motd.d/99-bioshell
   register: motd_file
 
 - name: Assert MOTD exists
@@ -43,5 +43,5 @@
       - motd_file.stat.exists
 
 - name: Check MOTD contains BioShell marker
-  command: grep -q "BioShell" /etc/motd.d/bioshell
+  command: grep -q "BioShell" /etc/update-motd.d/99-bioshell
   changed_when: false

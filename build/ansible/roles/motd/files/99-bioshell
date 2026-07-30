@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# BioShell login banner, run by run-parts as part of /etc/update-motd.d.
+# To customize this banner, edit build/ansible/roles/motd/files/99-bioshell
+# in the BioShell repo and re-provision (Packer/Ansible), or edit this file
+# directly on the image and it will be picked up on the next SSH login.
+
+set -u
+
+VERSION_FILE="/etc/bioshell-version"
+BIOSHELL_VERSION="dev"
+if [ -r "$VERSION_FILE" ]; then
+    BIOSHELL_VERSION="$(cat "$VERSION_FILE" 2>/dev/null)"
+    [ -z "$BIOSHELL_VERSION" ] && BIOSHELL_VERSION="dev"
+fi
+
+# This script is rendered once into /run/motd.dynamic by pam_motd and then
+# just displayed to whichever terminal the SSH client provides, so $TERM and
+# $COLORTERM in *this* execution environment are irrelevant (pam_motd runs
+# update-motd.d scripts with no controlling terminal, so tput/$TERM-based
+# detection never works here) — use raw ANSI/truecolor escapes unconditionally.
+BOLD=$'\e[1m'
+RESET=$'\e[0m'
+
+# BioCommons brand palette (truecolor, 24-bit).
+GREEN=$'\e[38;2;90;195;177m'    # #5ac3b1
+ORANGE=$'\e[38;2;244;159;29m'   # #f49f1d
+RED=$'\e[38;2;237;8;124m'       # #ed087c
+BLUE=$'\e[38;2;32;90;134m'      # #205a86
+
+CYAN="$BLUE"
+YELLOW="$ORANGE"
+MAGENTA="$RED"
+
+COLS=80
+
+rule() {
+    printf '%s' "${CYAN}"
+    printf '.%.0s' $(seq 1 "$COLS")
+    printf '%s\n' "${RESET}"
+}
+
+USER_NAME="${USER:-}"
+if [ -z "$USER_NAME" ]; then
+    USER_NAME="$(id -un 2>/dev/null)"
+fi
+[ -z "$USER_NAME" ] && USER_NAME="user"
+
+HOST_NAME="$(hostname -s 2>/dev/null)"
+[ -z "$HOST_NAME" ] && HOST_NAME="$(hostname 2>/dev/null)"
+[ -z "$HOST_NAME" ] && HOST_NAME="bioshell"
+
+# Environment status
+MODULE_COUNT="n/a"
+LMOD_INIT="/usr/share/lmod/lmod/init/bash"
+if [ -r "$LMOD_INIT" ] && ! command -v module >/dev/null 2>&1; then
+    # shellcheck disable=SC1090
+    . "$LMOD_INIT" >/dev/null 2>&1
+fi
+if command -v module >/dev/null 2>&1; then
+    MODULE_COUNT="$(module avail -t 2>&1 | grep -Evc '^\s*$|:$')"
+fi
+
+CVMFS_STATUS="not mounted"
+if command -v mountpoint >/dev/null 2>&1 && mountpoint -q /cvmfs 2>/dev/null; then
+    CVMFS_STATUS="mounted"
+fi
+
+echo
+echo
+
+cat <<ART
+${BOLD}${GREEN}   
+                            
+┌─────────────────────────────────────────────────────────────────────────────────────┐   
+│                                       ☆                              ★  ☆           │   
+│                               ★                  ★                   ☆              │   
+│       ☆         ☆                                                                   │   
+│★           ★                                  ☆               ★                     │   
+│            ☆                    ★                                                   │   
+│                                                                    ★                │
+│            ████  ▒▒▒                                                      ☆         │
+│           ██████ ▒▘▒▒                          ★                                    │
+│        ▒▒████████▒▒                                                                 │
+│───────── ▒▒    ▒▒ ──────────────────────────────────────────────────────────────────│
+│                                                                                     │   
+│   Welcome to BioShell !                                                             │   
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘   
+
+${RESET}
+ART
+
+printf '%sDocumentation at: https://sih.tools/bioshell-guide%s\n' "${BOLD}${RED}" "${RESET}"
+echo
+printf '%sQuick commands%s\n' "${BOLD}${ORANGE}" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" "shelley help" "List available commands" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley find <tool>' "List containers for a bioinformatics tool" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley search <function>' "Search for tools by function" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" 'shelley build <tool>' "Make a module loadable bioinformatics tool" "${RESET}"
+printf '  %s%-32s %s%s\n' "${BLUE}" "shelley interactive" "Launch the interactive assistant" "${RESET}"
+echo
+
+exit 0
