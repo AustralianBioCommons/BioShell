@@ -351,7 +351,7 @@ ssh -i /path/to/your/key <remote_user>@<bioshell_ip>
 
 ### MOTD / Welcome Banner
 
-Every SSH login to a BioShell VM shows a welcome banner with a live snapshot of the environment: the number of software modules currently available and whether CVMFS is mounted, plus a quick-reference list of common commands (`module avail`, `shelley-bio search`, `shelley-bio interactive`).
+Every SSH login to a BioShell VM shows a welcome banner with a live snapshot of the environment: the number of software modules currently available and whether CVMFS is mounted, plus a quick-reference list of common commands (`module avail`, `shelley search`, `shelley interactive`).
 
 The banner is generated dynamically on each login by `/etc/update-motd.d/99-bioshell` (installed via `run-parts`/`pam_motd`), so it always reflects the current state of the instance rather than a static message baked into the image.
 
@@ -437,36 +437,35 @@ If you have not set a password yet:
 sudo passwd $USER
 ```
 
-#### Shelley-Bio
+#### shelley
 
-Shelley-Bio is a command-line assistant built into BioShell to help you find, explore, and install bioinformatics tools. It answers questions in plain language and can locate software available through the image's installed package managers and module system.
+shelley is a command-line assistant built into BioShell to help you find, explore, and install bioinformatics tools. It answers questions in plain language and can locate software available through the image's installed package managers and module system.
 
-Shelley-Bio is available system-wide and requires no module loading:
+shelley is available system-wide and requires no module loading:
 ```
-shelley-bio --help
+shelley --help
 ```
 
 **Key commands:**
 
 | Command | Description |
 |---|---|
-| `shelley-bio search "<function>"` | Find tools by describing what you want to do |
-| `shelley-bio find <tool>` | Look up a specific tool by name |
-| `shelley-bio versions <tool>` | List available versions of a tool |
-| `shelley-bio build <tool>` | Install or build a tool |
-| `shelley-bio interactive` | Start an interactive session for guided assistance |
+| `shelley search "<function>"` | Find tools by describing what you want to do |
+| `shelley find <tool>` | Look up a specific tool by name |
+| `shelley build <tool>` | Install or build a tool |
+| `shelley interactive` | Start an interactive session for guided assistance |
 
 **Examples:**
 ```
 # Find tools for quality control
-shelley-bio search "quality control"
+shelley search "quality control"
 
 # Look up samtools
-shelley-bio find samtools
+shelley find samtools
 
 # Check available versions of STAR
-shelley-bio versions STAR
+shelley versions STAR
 
 # Launch interactive mode for guided help
-shelley-bio interactive
+shelley interactive
 ```
