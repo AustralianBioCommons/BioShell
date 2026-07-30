@@ -31,13 +31,6 @@
 
 ---
 
-## Changelog
-
-- [ ] Updated `CHANGELOG.md` with a summary of changes under the correct version heading
-- [ ] No changelog entry needed (e.g. internal refactor, typo fix)
-
----
-
 ## Checklist
 
 - [ ] My changes follow the existing conventions in this repo

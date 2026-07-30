@@ -14,7 +14,7 @@ BioShell follows [Semantic Versioning](https://semver.org/) (SemVer): `MAJOR.MIN
 | MINOR (`1.X.0`) | New features, backwards compatible | GitHub Action (~6 monthly), or manual for larger additions | New software bundle, new interface (RStudio), new platform supported, significant new dataset |
 | PATCH (`1.1.X`) | Bug fixes and small updates | Manual | Patched config, corrected dataset, minor documentation fix |
 
-The version number is defined by the `image_version` variable in [`build/openstack-bioshell.pkr.hcl`](../build/openstack-bioshell.pkr.hcl) and is tied to a specific VM image snapshot — not to documentation or policy changes alone. Notable changes are recorded in [CHANGELOG.md](../CHANGELOG.md).
+The version number is defined by the `image_version` variable in [`build/openstack-bioshell.pkr.hcl`](../build/openstack-bioshell.pkr.hcl) and is tied to a specific VM image snapshot — not to documentation or policy changes alone.
 
 Pre-1.0.0, release-candidate labels (e.g. `1.0.0-rc1`) may be used to signal a build intended for validation ahead of a production release. The jump to `1.0.0` signals production readiness.
 
@@ -58,4 +58,3 @@ When merging a version bump (automated or manual):
 2. Build and smoke-test the image on at least one of Nectar or Nirin before merge, where practical.
 3. Merge the PR.
 4. Tag the release in GitHub matching `image_version` (e.g. `v1.1.0`).
-5. Add an entry to [CHANGELOG.md](../CHANGELOG.md) summarising the change.
