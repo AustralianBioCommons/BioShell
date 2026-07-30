@@ -393,7 +393,7 @@ ls /cvmfs/data.galaxyproject.org
 ls /cvmfs/singularity.galaxyproject.org
 
 ```
-For an explanation of what CVMFS is, how it works, and how it is used in BioShell, see [CVMFS documentation](docs/cvmfs.md).
+For an explanation of what CVMFS is, how it works, and how it is used in BioShell, see [CVMFS documentation](https://cvmfs.readthedocs.io/en/stable/).
 
 #### R and RStudio
 `R` is pre-installed system-wide on the VM and is available without loading a module.
