@@ -26,7 +26,7 @@ For usage instructions, see the [Bioshell Guide](https://sih.tools/bioshell-guid
     * [Setup](#setup)
     * [Activation](#activation)
 * [Build Image](#build-image)
-* [Using BioShell](docs/Using_BioShell)
+* [Using BioShell](docs/Using_BioShell.md)
 * [Maintenance & Versioning](docs/MAINTENANCE.md)
 
 ## Spinning up a VM in OpenStack
