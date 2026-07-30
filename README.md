@@ -4,7 +4,7 @@
   <img src="images/BioShell_logo_with_name.png" alt="BioShell logo" width="400">
 </p>
 
-BioShell is a ready-to-use, scalable cloud environment for bioinformatics. It provides researchers and training providers with a flexible platform for doing bioinformatics analyses while eliminating the overhead of complex system setup and infrastructure management. BioShell enables users to focus on research and training, rather than on system configuration and resource provisioning.
+[BioShell](https://www.biocommons.org.au/bioshell) is a ready-to-use, scalable cloud environment for bioinformatics. It provides researchers and training providers with a flexible platform for doing bioinformatics analyses while eliminating the overhead of complex system setup and infrastructure management. BioShell enables users to focus on research and training, rather than on system configuration and resource provisioning.
 
 ### How BioShell Is Built
 BioShell is built using Packer and Ansible, and is designed to run on OpenStack‑based cloud infrastructure. This approach enables reproducible image builds, consistent configuration, and rapid deployment. The result is a ready‑to‑use virtual machine (VM) image that includes commonly used bioinformatics tools, dependencies, and sensible defaults for CLI‑based analysis.
